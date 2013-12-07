@@ -1,3 +1,13 @@
+***** Compiling on windows *****
+
+Because a lot of the dependent libraries do not have the correct exports on windows 
+(I guess linux defaults to exporting all functions), I just compiled all the libraries
+ScaVislam needed as static libraries. I had also made sure that all libraries were
+using /MTd (I have not tried release yet).
+
+I aslo compiled this against opencv 249, so some updates were needed.
+
+
 ***** ScaViSLAM *****
 
 This is a general and scalable framework for visual SLAM. It employs 
