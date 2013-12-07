@@ -16,8 +16,8 @@
 // along with ScaViSLAM.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
-#include <tr1/unordered_set>
-#include <tr1/unordered_map>
+#include <unordered_set>
+#include <sunordered_map>
 
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
@@ -25,6 +25,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/core/utility.hpp>
 #include <opencv2/flann/flann.hpp>
 
 

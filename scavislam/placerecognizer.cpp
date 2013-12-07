@@ -17,7 +17,7 @@
 
 #include "placerecognizer.h"
 
-#include <tr1/memory>
+#include <memory>
 
 #include <visiontools/accessor_macros.h>
 #include <visiontools/stopwatch.h>
@@ -212,7 +212,10 @@ void PlaceRecognizer
   //todo: adpative SURF thr
   double surf_thr  = 600;
   vector<cv::KeyPoint> keypoints;
+  keypoints.reserve(3000);
   vector<cv::KeyPoint> keypoints_with_depth;
+  keypoints_with_depth.reserve(3000);
+
   cv::SurfFeatureDetector surf(surf_thr, 2);
   surf.detect(pr_data.keyframe.pyr.at(0),keypoints);
 

@@ -31,6 +31,8 @@
 #include "maths_utils.h"
 #include "quadtree.h"
 #include "pose_optimizer.h"
+#include <opencv2\imgproc\types_c.h>
+#include <opencv2/calib3d.hpp>
 
 namespace ScaViSLAM
 {
@@ -538,7 +540,7 @@ calcDisparityGpu()
 
   if (stereo_method==1)
   {
-    cv::StereoBM stereo_bm;
+    /*cv::StereoBM stereo_bm;
     stereo_bm.state->preFilterCap = 31;
     stereo_bm.state->SADWindowSize = 7;
     stereo_bm.state->minDisparity = 0;
@@ -560,8 +562,8 @@ calcDisparityGpu()
     frame_data_->gpu_disp_32f.convertTo(frame_data_->gpu_disp_16s,CV_16S, 1.);
     cv::gpu::drawColorDisp(frame_data_->gpu_disp_16s,
                            frame_data_->gpu_color_disp,num_disparities);
-    frame_data_->gpu_color_disp.download(frame_data_->color_disp);
-
+    frame_data_->gpu_color_disp.download(frame_data_->color_disp);*/
+    assert(0);
   }
   else if (stereo_method==2)
   {
@@ -622,23 +624,26 @@ void StereoFrontend
 {
   static pangolin::Var<int> num_disp16("ui.num_disp16",2,1,10);
   int num_disparities = num_disp16*16;
-  cv::StereoBM stereo_bm;
-  stereo_bm.state->preFilterCap = 31;
-  stereo_bm.state->SADWindowSize = 7;
-  stereo_bm.state->minDisparity = 0;
+  
+  cv::Ptr<cv::StereoBM> stereo_bm = cv::createStereoBM( num_disparities, 7);
 
-  stereo_bm.state->textureThreshold = 10;
-  stereo_bm.state->uniquenessRatio = 15;
-  stereo_bm.state->speckleWindowSize = 100;
-  stereo_bm.state->speckleRange = 32;
-  stereo_bm.state->disp12MaxDiff = 1;
+  // use createStereoSGBM?
 
-  stereo_bm.state->numberOfDisparities = num_disparities;
+  //stereo_bm->setPreFilterType(state->preFilterType);
+  //stereo_bm->setPreFilterSize(state->preFilterSize);
+  stereo_bm->setPreFilterCap(31);
+  //stereo_bm->minDisparity = 0;
 
-  stereo_bm(frame_data_->cur_left().pyr_uint8[0],
+  
+  stereo_bm->setTextureThreshold(10);
+  stereo_bm->setUniquenessRatio(15);
+  stereo_bm->setSpeckleWindowSize(100);
+  stereo_bm->setSpeckleRange(32); 
+  stereo_bm->setDisp12MaxDiff(1);
+
+  stereo_bm->compute(frame_data_->cur_left().pyr_uint8[0],
             frame_data_->right.uint8,
-            frame_data_->disp,
-            CV_32F);
+            frame_data_->disp);
 
   vector<cv::Mat> hsv_array(3);
   hsv_array[0] = cv::Mat(frame_data_->disp.size(), CV_8UC1);
@@ -856,7 +861,7 @@ AddToOptimzerPtr StereoFrontend
   int num_track_points = 0;
   double sum_track_length = 0.f;
 
-  for (list<IdObs<3> >::const_iterator it=track_data.obs_list.begin();
+  for (ALIGNED<IdObs<3> >::list::const_iterator it=track_data.obs_list.begin();
        it!=track_data.obs_list.end(); ++it)
   {
     IdObs<3> id_obs = *it;

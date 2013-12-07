@@ -166,7 +166,8 @@ operator()                ()
 {
   while(initialized_)
   {
-    if (mon_->isBufferFull()==false)
+    if ((mon_->isBufferFull()==false) &&
+        (internal_frame_id_ < file_base_vec_.size()))
     {
       basename = file_base_vec_.at(internal_frame_id_);
 

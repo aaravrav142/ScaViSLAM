@@ -94,6 +94,8 @@ public:
   void
   initialize                 ();
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   // getter and setter
   NeighborhoodPtr & neighborhood()
   {

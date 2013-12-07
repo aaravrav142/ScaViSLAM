@@ -150,7 +150,8 @@ public:
 
     Frame  new_frame = *frame;
     double norm_max_A = 0.;
-    for (typename std::list<Obs>
+    double norm_max_B = 0.;
+    for (ALIGNED<IdObs<3>>::list
          ::const_iterator it_cam = obs_list.begin();
          it_cam != obs_list.end();
          ++it_cam)
@@ -206,7 +207,7 @@ public:
         typename VECTOR<FrameDoF>::col B = Matrix<double,FrameDoF,1>::Zero();
         Matrix<double,FrameDoF,FrameDoF> A
             = mu*Matrix<double,FrameDoF,FrameDoF>::Identity();
-        for (typename std::list<Obs>
+        for (typename ALIGNED<Obs>::list
              ::const_iterator it_cam = obs_list.begin();
              it_cam != obs_list.end();
              ++it_cam)
@@ -239,7 +240,7 @@ public:
         mean.setZero();
         new_chi2 = 0;
         new_max_err=0;
-        for (typename std::list<Obs>
+        for (typename ALIGNED<Obs>::list
              ::const_iterator it_cam = obs_list.begin();
              it_cam != obs_list.end();
              ++it_cam)
@@ -434,36 +435,38 @@ protected:
       return 2*b*delta_abs - b*b;
   }
 
-  template <int Trans1DoF, int Trans2DoF>
-  Matrix<double,Trans1DoF,Trans2DoF>
-  mulW(const Matrix<double,ObsDim,Trans1DoF> & J_trans1,
-       const Matrix<double,ObsDim,Trans2DoF> &  J_trans2,
-       const IdObs<ObsDim> & obs )
+  template <typename _scalar1, int _rows1,int _cols1 ,
+            typename _scalar2, int _rows2,int _cols2>
+  Matrix<_scalar1,_cols1,_cols2>
+  mulW( const Matrix<_scalar1,_rows1,_cols1> &J_trans1,
+        const Matrix<_scalar2,_rows2,_cols2> &J_trans2,
+        const IdObs<ObsDim> & obs )
   {
     return J_trans1.transpose() * J_trans2;
   }
 
-  template <int Trans1DoF, int Trans2DoF>
-  Matrix<double,Trans1DoF,Trans2DoF>
-  mulW(const Matrix<double,ObsDim,Trans1DoF> & J_trans1,
-       const Matrix<double,ObsDim,Trans2DoF> & J_trans2,
+  template <typename _scalar1, int _rows1,int _cols1 ,
+            typename _scalar2, int _rows2,int _cols2>
+  Matrix<_scalar1,_cols1,_cols2>
+  mulW(const Matrix<_scalar1,_rows1,_cols1> & J_trans1,
+       const Matrix<_scalar2,_rows2,_cols2> & J_trans2,
        const IdObsLambda<ObsDim> & obs )
   {
     return J_trans1.transpose() * obs.lambda *J_trans2;
   }
 
-  template <int TransDoF>
-  Matrix<double,TransDoF,1>
-  mulW(const Matrix<double,ObsDim,TransDoF> & J_trans,
+  template <typename _scalar1, int _rows1,int _cols1>
+  Matrix<_scalar1,_cols1,1>
+  mulW(const Matrix<_scalar1,_rows1,_cols1> & J_trans,
        const Matrix<double,ObsDim,1> & f,
        const IdObs<ObsDim> & obs )
   {
     return J_trans.transpose() * f;
   }
 
-  template <int TransDoF>
-  inline Matrix<double,TransDoF,1>
-  mulW(const Matrix<double,ObsDim,TransDoF> & J_trans,
+  template <typename _scalar1, int _rows1,int _cols1>
+  inline Matrix<_scalar1,_cols1,1>
+  mulW(const Matrix<_scalar1,_rows1,_cols1> & J_trans,
        const Matrix<double,ObsDim,1> & f,
        const IdObsLambda<ObsDim> & obs )
   {

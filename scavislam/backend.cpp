@@ -625,7 +625,7 @@ void Backend
   double REPROJ_THR = 2.0;
   int COVIS_THR = graph_.covis_thr();
 
-  for (list<IdObs<3> >::const_iterator it = track_data.obs_list.begin();
+  for (ALIGNED<IdObs<3> >::list::const_iterator it = track_data.obs_list.begin();
        it!=track_data.obs_list.end(); ++it)
   {
     IdObs<3> id_obs = *it;
@@ -911,7 +911,7 @@ bool Backend
   int img_width = loop_frame.pyr.at(0).size().width;
   int img_height = loop_frame.pyr.at(0).size().height;
 
-  for (list<IdObs<3> >::const_iterator it = track_data.obs_list.begin();
+  for (ALIGNED<IdObs<3> >::list::const_iterator it = track_data.obs_list.begin();
        it!=track_data.obs_list.end(); ++it)
   {
     IdObs<3> id_obs = *it;

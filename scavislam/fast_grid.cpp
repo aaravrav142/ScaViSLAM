@@ -98,6 +98,7 @@ detectAdaptively(const cv::Mat & img, int trials, QuadTree<int> * qt)
       FastGridCell & c = cell_grid.at(i);
 
       vector<cv::KeyPoint>  cell_corners;
+      cell_corners.reserve(3000);
       for (int trial=0; trial<trials; ++trial)
       {
         cell_corners.clear();

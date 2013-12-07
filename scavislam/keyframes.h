@@ -18,7 +18,7 @@
 #ifndef SCAVISLAM_KEYFRAMES_H
 #define SCAVISLAM_KEYFRAMES_H
 
-#include <tr1/memory>
+#include <memory>
 #include <vector>
 #include <opencv2/opencv.hpp>
 

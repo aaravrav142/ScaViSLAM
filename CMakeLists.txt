@@ -5,7 +5,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     "${PROJECT_SOURCE_DIR}/CMakeModules/")
 
-SET (OpenCV_DIR ${CMAKE_PREFIX_PATH}/share/OpenCV)
+SET (OpenCV_DIR $ENV{OpenCV_DIR})
+
+SET (EIGEN3_INCLUDE_DIR "E:/camera_egs/eigen")
 
 SET (CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -64,12 +66,38 @@ LIST(APPEND INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR}
 
 LIST(APPEND CMAKE_LIBRARY_PATH EXTERNAL/VisionTools/svs_build/)
 
-SET (LIB_NAMES GL pangolin glut g2o_stuff g2o_core g2o_solver_csparse csparse
-               g2o_csparse_extension  VisionTools Sophus
-               boost_system boost_thread boost_filesystem boost_regex
-               opencv_core opencv_features2d opencv_flann opencv_gpu
-               opencv_nonfree
-               opencv_highgui opencv_imgproc opencv_calib3d)
+find_package(Boost COMPONENTS thread filesystem system regex REQUIRED QUIET)
+message(STATUS " boost lib dir ${Boost_LIBRARY_DIR}")
+link_directories(${Boost_LIBRARY_DIR})
+list(APPEND INCLUDE_DIRS  "${Boost_INCLUDE_DIRS}" )
+
+#FIND_PACKAGE(OpenCV REQUIRED)
+LIST(APPEND INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS})
+LIST(APPEND LIBS ${OpenCV_LIBS})
+
+LIST(APPEND INCLUDE_DIRS ${LIB_Sophus})
+
+LIST(APPEND INCLUDE_DIRS "C:/Program Files (x86)/VisionTools/include")
+LIST(APPEND INCLUDE_DIRS "C:/Program Files (x86)/g2o/include")
+LIST(APPEND INCLUDE_DIRS "E:/camera_egs/freeglut/include")
+add_definitions(-D_WINDOWS)
+
+include("C:/Program Files (x86)/Pangolin/lib/cmake/Pangolin/PangolinConfig.cmake")
+LIST(APPEND INCLUDE_DIRS ${Pangolin_INCLUDE_DIRS})
+LIST(APPEND LIBS ${LIB_pangolin}/lib/pangolin.lib)
+
+
+find_package(GLEW REQUIRED)
+
+LIST(APPEND INCLUDE_DIRS ${GLEW_INCLUDE_DIR})
+LIST(APPEND LIBS ${GLEW_LIBRARY})
+
+#boost_system boost_thread boost_filesystem boost_regex
+#opencv_core opencv_features2d opencv_flann opencv_gpu
+               #opencv_nonfree
+               #opencv_highgui opencv_imgproc opencv_calib3d
+SET (LIB_NAMES pangolin glut g2o_stuff_d g2o_core_d g2o_solver_csparse_d csparse
+               g2o_csparse_extension_d  VisionTools Sophus)
 
 IF(CUDA_SUPPORT)
   LIST(APPEND INCLUDE_DIRS "EXTERNAL/opencv2/modules/gpu/include")
@@ -79,8 +107,17 @@ IF(CUDA_SUPPORT)
   ADD_DEFINITIONS(-DCUDA_BUILD -DBT_USE_DOUBLE_PRECISION)
 ENDIF()
 
+find_package (OpenGL REQUIRED)
+if(OPENGL_FOUND)
+ message(STATUS " gl stat ${OPENGL_LIBRARIES}")
+ set(LIB_GL ${OPENGL_LIBRARIES})
+ message(STATUS " gl stat ${LIB_GL}")
+ LIST(APPEND LIBS ${LIB_GL})
+endif(OPENGL_FOUND)
 
 FOREACH(lib ${LIB_NAMES})
+  
+  message(STATUS " lib search ${lib}")
   FIND_LIBRARY(LIB_${lib} ${lib})
   IF (LIB_${lib})
     MESSAGE(STATUS "found library '${lib}': ${LIB_${lib}}")
@@ -89,6 +126,10 @@ FOREACH(lib ${LIB_NAMES})
   ENDIF (LIB_${lib})
   LIST(APPEND LIBS ${LIB_${lib}})
 ENDFOREACH(lib)
+
+
+message(STATUS " libs ${LIB_NAMES}")
+
 
 #Add class XYZ here which consits of two files: XYZ.cpp and XYZ.h
 SET (CLASSES  placerecognizer
@@ -144,10 +185,10 @@ LINK_LIBRARIES (${PROJECT_NAME} ${LIBS} ${PCL_LIBRARIES})
 IF(CUDA_SUPPORT)
   LIST(APPEND INCLUDE_DIRS ${CUDA_SDK_ROOT_DIR}/common/inc ${CUDA_INCLUDE_DIRS})
   CUDA_ADD_EXECUTABLE(stereo_slam ${SOURCE_DIR}/stereo_slam.cpp)
-  CUDA_ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES})
+  CUDA_ADD_LIBRARY(${PROJECT_NAME} STATIC ${SOURCES})
 ELSE()
   ADD_EXECUTABLE(stereo_slam ${SOURCE_DIR}/stereo_slam.cpp)
-  ADD_LIBRARY(${PROJECT_NAME} SHARED ${SOURCES})
+  ADD_LIBRARY(${PROJECT_NAME} STATIC ${SOURCES})
 ENDIF()
 ADD_EXECUTABLE(create_dictionary ${SOURCE_DIR}/create_dictionary.cpp)
 IF(PCL_SUPPORT)

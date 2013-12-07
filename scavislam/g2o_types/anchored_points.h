@@ -23,9 +23,9 @@
 #include <g2o/core/base_multi_edge.h>
 #include <g2o/core/base_unary_edge.h>
 
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 #ifdef MONO
-#include <sophus/sim3.h>
+#include <sophus/sim3.hpp>
 #endif
 
 #include "../global.h"
@@ -40,6 +40,8 @@ using namespace Sophus;
 class G2oCameraParameters : public g2o::Parameter
 {
 public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   G2oCameraParameters();
 
   G2oCameraParameters        (const Vector2d & principle_point,
@@ -59,12 +61,14 @@ public:
   read                       (std::istream& is)
   {
     assert(false);
+    return false;
   }
 
   virtual bool
   write                      (std::ostream& os) const
   {
     assert(false);
+    return false;
   }
 
 
@@ -73,7 +77,7 @@ public:
   double baseline_;
 };
 
-class G2oVertexSE3 : public g2o::BaseVertex<6, SE3>
+class G2oVertexSE3 : public g2o::BaseVertex<6, SE3d>
 {
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -160,7 +164,7 @@ public:
 };
 
 class G2oEdgeSE3
-    : public g2o::BaseBinaryEdge<6, SE3, G2oVertexSE3, G2oVertexSE3>
+    : public g2o::BaseBinaryEdge<6, SE3d, G2oVertexSE3, G2oVertexSE3>
 {
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW

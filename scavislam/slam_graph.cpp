@@ -90,7 +90,7 @@ bool SlamGraph<Pose,Cam,Proj,ObsDim>
 
     const Vertex & v = GET_MAP_ELEM(leaf_v.own_id, vertex_table_);
 
-    for (map<int,int>::const_reverse_iterator it
+    for (multimap<int,int>::const_reverse_iterator it
          = v.neighbor_ids_ordered_by_strength.rbegin();
          it!=v.neighbor_ids_ordered_by_strength.rend();
          ++it)
@@ -128,7 +128,7 @@ tr1::unordered_set<int>  SlamGraph<Pose,Cam,Proj,ObsDim>
 
     const Vertex & v = GET_MAP_ELEM(leaf_v, vertex_table_);
 
-    for (map<int,int>::const_reverse_iterator it
+    for (multimap<int,int>::const_reverse_iterator it
          = v.neighbor_ids_ordered_by_strength.rbegin();
          it!=v.neighbor_ids_ordered_by_strength.rend();
          ++it)
@@ -585,7 +585,7 @@ void SlamGraph<Pose,Cam,Proj,ObsDim>
     }
 
     const Vertex & v  = GET_MAP_ELEM(leaf_v, vertex_table_);
-    for (map<int,int>::const_reverse_iterator it
+    for (multimap<int,int>::const_reverse_iterator it
          = v.neighbor_ids_ordered_by_strength.rbegin();
          it!=v.neighbor_ids_ordered_by_strength.rend();
          ++it)
@@ -711,7 +711,7 @@ void SlamGraph<Pose,Cam,Proj,ObsDim>
           *node.T_parent_from_world;
     }
 
-    for (map<int,int>::const_reverse_iterator it
+    for (multimap<int,int>::const_reverse_iterator it
          = v.neighbor_ids_ordered_by_strength.rbegin();
          it!=v.neighbor_ids_ordered_by_strength.rend();
          ++it)

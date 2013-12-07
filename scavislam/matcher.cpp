@@ -19,7 +19,7 @@
 
 #include <stdint.h>
 
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 
 #include <visiontools/accessor_macros.h>
 
@@ -151,7 +151,7 @@ void GuidedMatcher<Camera>
                   int level,
                   MatchData *match_data)
 {
-  for (list<QuadTreeElement<int> >::const_iterator it = candidates.begin();
+  for (ALIGNED<QuadTreeElement<int> >::list::const_iterator it = candidates.begin();
        it!=candidates.end(); ++it)
   {
     Vector2i cur_uvi = it->pos.cast<int>();
@@ -331,8 +331,7 @@ void GuidedMatcher<Camera>
 
   SE3 T_cur_from_w = T_cur_from_actkey*T_actkey_from_w;
 
-  for (typename ALIGNED<tr1::shared_ptr<CandidatePoint<Camera::obs_dim> > >
-       ::list::const_iterator it = ap_map.begin(); it!=ap_map.end();++it)
+  for ( list< tr1::shared_ptr<CandidatePoint<Camera::obs_dim> > >::const_iterator it = ap_map.begin(); it!=ap_map.end();++it)
   {
     const tr1::shared_ptr<CandidatePoint<Camera::obs_dim> > & ap
         = *it;

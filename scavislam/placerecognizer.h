@@ -19,9 +19,10 @@
 #define SCAVISLAM_PLACERECOGNIZER_H
 
 #include <boost/thread.hpp>
+#include <opencv2/core/utility.hpp>
 #include <opencv2/flann/flann.hpp>
 
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 
 #include "matcher.hpp"
 #include "keyframes.h"
@@ -81,6 +82,7 @@ struct Place
 class PlaceRecognizer
 {
 public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   PlaceRecognizer            (const StereoCamera & stereo_cam_);
 
   void

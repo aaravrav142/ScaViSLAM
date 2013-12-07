@@ -159,6 +159,7 @@ template<class Camera>
 class FrameGrabber
 {
 public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   struct Params
   {
     Vector3d rot_left;

@@ -19,7 +19,7 @@
 #define SCAVISLAM_MATCHER_HPP
 
 #include <stdint.h>
-#include <tr1/memory>
+#include <memory>
 
 #include <opencv2/opencv.hpp>
 
@@ -27,10 +27,10 @@
 #include "global.h"
 #include "quadtree.h"
 
-namespace Sophus
-{
-class SE3;
-}
+//namespace Sophus
+//{
+//class SE3;
+//}
 
 namespace ScaViSLAM
 {
@@ -55,6 +55,7 @@ struct TrackData
   }
 
   typename ALIGNED<IdObs<obs_dim> >::list obs_list;
+  
   vector<Vector3d> point_list;
   vector<tr1::shared_ptr<CandidatePoint<obs_dim> > > ba2globalptr;
 };
@@ -102,7 +103,7 @@ public:
 
 private:
 
-  typedef uint8_t aligned_uint8_t __attribute__ ((__aligned__(16)));
+  typedef uint8_t aligned_uint8_t;
 
   struct MatchData
   {

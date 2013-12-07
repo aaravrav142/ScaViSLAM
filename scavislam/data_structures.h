@@ -20,7 +20,7 @@
 
 #include <list>
 
-#include <sophus/se3.h>
+#include <sophus/se3.hpp>
 
 #include "global.h"
 #include "keyframes.h"
@@ -152,11 +152,12 @@ typedef tr1::shared_ptr<NewTwoViewPoint<3> > NewTwoViewPoint3Ptr;
 
 struct AddToOptimzer
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   AddToOptimzer(bool first_frame=false) : first_frame(first_frame)
   {
   }
 
-  SE3 T_newkey_from_oldkey;
+  SE3d T_newkey_from_oldkey;
   list<NewTwoViewPoint3Ptr> new_point_list;
   list<TrackPoint3Ptr> track_point_list;
 
@@ -172,7 +173,7 @@ typedef tr1::shared_ptr<AddToOptimzer> AddToOptimzerPtr;
 
 struct FrontendVertex
 {
-  SE3 T_me_from_w;
+  SE3d T_me_from_w;
   multimap<int,int> strength_to_neighbors;
   ImageFeature<3>::Table feat_map;
 };

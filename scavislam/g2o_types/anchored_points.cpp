@@ -185,7 +185,7 @@ void G2oEdgeProjectPSI2UVU::linearizeOplus()
                          y);
   _jacobianOplus[0] = -Jcam*d_Tinvpsi_d_psi(T_ca, psi_a);
   _jacobianOplus[1] = -Jcam*d_expy_d_y(y);
-  _jacobianOplus[2] = Jcam*T_ca.rotation_matrix()*d_expy_d_y(x_a);
+  _jacobianOplus[2] = Jcam*T_ca.rotationMatrix()*d_expy_d_y(x_a);
 }
 
 
@@ -227,7 +227,7 @@ void G2oEdgeSE3::
 linearizeOplus()
 {
   const SE3 & T_21 = _measurement;
-  SE3 I;
+  SE3d I;
   const Vector6d & d = _error;
   _jacobianOplusXi = third(T_21, d);
   _jacobianOplusXj = -third(I, -d);

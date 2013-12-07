@@ -50,11 +50,13 @@
 
 find_path(OpenCV_DIR "OpenCVConfig.cmake" DOC "Root directory of OpenCV")
 
+message(STATUS "Normal: OpenCV looking for OpenCV_DIR ${OpenCV_DIR}")
 ##====================================================
 ## Find OpenCV libraries
 ##----------------------------------------------------
 if(EXISTS "${OpenCV_DIR}")
 
+        message(STATUS "Normal: OpenCV looking for OpenCV_DIR1")
         #When its possible to use the Config script use it.
         if(EXISTS "${OpenCV_DIR}/OpenCVConfig.cmake")
 
@@ -85,7 +87,7 @@ if(EXISTS "${OpenCV_DIR}")
 
 
 
-
+        message(STATUS "Normal: OpenCV starting search")
         ## Initiate the variable before the loop
         set(GLOBAL OpenCV_LIBS "")
         set(OpenCV_FOUND_TMP true)
@@ -111,7 +113,7 @@ if(EXISTS "${OpenCV_DIR}")
                 #no library found
                 else()
                         set(OpenCV_FOUND_TMP false)
-                endif()
+                endif() 
                 
                 #Add to the general list
                 if(OpenCV_${__CVLIB}_LIBRARY)

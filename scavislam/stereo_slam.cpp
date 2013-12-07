@@ -16,10 +16,19 @@
 // along with ScaViSLAM.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef SCAVISLAM_CUDA_SUPPORT
-#include <cutil_inline.h>
+#include <cuda_runtime_api.h>
+// one of:
+//helper_cuda.h, helper_cuda_gl.h, helper_cuda_drvapi.h, helper_functions.h,
+//helper_image.h, helper_math.h, helper_string.h, and helper_timer.h
 #endif
 
+#include <sophus/se3.hpp>
+//#ifdef MONO
+#include <sophus/sim3.hpp>
+//#endif
 #include <pangolin/pangolin.h>
+
+
 
 #include <visiontools/accessor_macros.h>
 #include <visiontools/draw2d.h>
@@ -113,6 +122,7 @@ struct Modules
     if(pla_reg!=NULL)
       delete pla_reg;
   }
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   FrameGrabber<StereoCamera> * frame_grabber;
   StereoFrontend * frontend;
@@ -121,13 +131,13 @@ struct Modules
   PlaceRecognizer * pla_reg;
 };
 
-Views
-initializeViews(const StereoCamera & stereo_camera)
+void
+initializeViews(Views &views, const StereoCamera & stereo_camera)
 {
-  pangolin::CreateGlutWindowAndBind("Main",
+  pangolin::CreateWindowAndBind("Main",
                                     stereo_camera.width()*2.5,
                                     stereo_camera.height()*2);
-  Views views;
+  //Views views;
   views.pyr
       = PyramidView::init(NUM_PYR_LEVELS,
                           1.0,
@@ -158,14 +168,14 @@ initializeViews(const StereoCamera & stereo_camera)
   views.graph->ticks[1] = 0.05;
   views.graph->plot_mode = pangolin::Plotter::STACKED_HISTOGRAM;
   views.graph->SetBounds(0.5,0.0,0.4,0.6,false);
-  return views;
+//  return views;
 }
 
-Modules
-startModules(const StereoCamera & stereo_camera,
+void
+startModules(Modules & modules, const StereoCamera & stereo_camera,
              Views * views)
 {
-  Modules modules;
+  //Modules modules;
   modules.per_mon = new PerformanceMonitor;
   modules.frame_grabber
       = new FrameGrabber<StereoCamera>(stereo_camera,
@@ -212,7 +222,7 @@ startModules(const StereoCamera & stereo_camera,
   modules.backend->monitor
       .pushKeyframe(modules.frontend->to_optimizer_stack.top());
   modules.frontend->to_optimizer_stack.pop();
-  return modules;
+  //return modules;
 }
 
 //TODO: method way too long...
@@ -376,9 +386,15 @@ void draw(int loop_id,
     if (ui_show_new_points)
     {
       glColor3f(0,1,0);
-      Draw2d::points(modules->frontend->draw_data().new_points2d.at(level),2);
+      if (modules->frontend->draw_data().new_points2d.at(level).size())
+      {
+        Draw2d::points(modules->frontend->draw_data().new_points2d.at(level),2);
+      }
       glColor3f(0,0,1);
-      Draw2d::points(modules->frontend->draw_data().fast_points2d.at(level),5);
+      if (modules->frontend->draw_data().fast_points2d.at(level).size())
+      {
+        Draw2d::points(modules->frontend->draw_data().fast_points2d.at(level),5);
+      }
     }
 
     if (level==0)
@@ -395,7 +411,8 @@ void draw(int loop_id,
     if (ui_show_fast_points)
     {
       glColor3f(0,1,1);
-      Draw2d::points(modules->frontend->draw_data().fast_points2d.at(level),2);
+      if (modules->frontend->draw_data().fast_points2d.at(level).size())
+        Draw2d::points(modules->frontend->draw_data().fast_points2d.at(level),2); 
     }
   }
 
@@ -661,7 +678,7 @@ int main(int argc, const char* argv[])
 
 #ifdef SCAVISLAM_CUDA_SUPPORT
   cudaDeviceProp prop;
-  CUDA_SAFE_CALL( cudaGetDeviceProperties(&prop, 0) );
+  cudaGetDeviceProperties(&prop, 0);
   std::cout << "Multiprocessors: " << prop.multiProcessorCount << std::endl;
 #endif
 
@@ -670,9 +687,11 @@ int main(int argc, const char* argv[])
                              cv::Size((int)cam_width,(int)cam_height),
                              cam_baseline);
 
-  Views views = initializeViews(stereo_camera);
+  Views views;
+  initializeViews(views, stereo_camera);
 
-  Modules modules = startModules(stereo_camera,
+  Modules modules;
+      startModules(modules, stereo_camera,
                                  &views);
   pangolin::Var<bool> next_button("ui.next Button",false,false);
   pangolin::Var<bool> play_button("ui.play Play",false,false);

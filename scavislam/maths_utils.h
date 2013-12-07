@@ -24,10 +24,10 @@
 
 #include "global.h"
 
-namespace Sophus
-{
-class SE3;
-}
+//namespace Sophus
+//{
+//class SE3;
+//}
 
 namespace ScaViSLAM
 {

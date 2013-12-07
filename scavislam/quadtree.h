@@ -20,7 +20,7 @@
 
 #include <queue>
 #include <stack>
-#include <tr1/array>
+#include <array>
 
 #include <opencv2/opencv.hpp>
 

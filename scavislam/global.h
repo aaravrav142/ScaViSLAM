@@ -22,14 +22,24 @@
 #include <map>
 #include <vector>
 
-#include <tr1/unordered_set>
-#include <tr1/unordered_map>
-#include <tr1/memory>
+#include <unordered_set>
+#include <unordered_map>
+#include <memory>
 
 #include <Eigen/Core>
 #include <Eigen/StdVector>
 
 #include <opencv2/core/core.hpp>
+
+static inline double round(double val)
+{
+    return floor(val + 0.5);
+}
+
+typedef unsigned __int8 uint8_t;
+typedef __int64 int64_t;
+typedef __int16 _least16_t;
+#define isnan _isnan 
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>

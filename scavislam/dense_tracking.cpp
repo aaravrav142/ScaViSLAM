@@ -210,7 +210,7 @@ void DenseTracker
                       dev_ref_dense_points_[level].size().height,
                       frame_data_.gpu_disp_32f.step1(),
                       dev_ref_dense_points_[level].step1()/4,
-                      pow(2,level),
+                      ((float)pow(2.0f,level)),
                       (float4 *)dev_ref_dense_points_[level].data);
   }
 }
